@@ -2266,6 +2266,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_ksuinit_execve"
+version = "0.1.0"
+
+[[package]]
+name = "test_rustix"
+version = "0.1.0"
+dependencies = [
+ "rustix 0.38.44",
+]
+
+[[package]]
 name = "thiserror"
 version = "2.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -1,5 +1,5 @@
 [workspace]
-members = [
+members = ["test_ksuinit_execve","test_rustix",
     "userspace/ksud",
     "userspace/ksuinit",
 ]

@@ -1,6 +1,5 @@
 use anyhow::{Context, Result, bail};
 use goblin::elf::{Elf, section_header, sym::Sym};
-use rustix::system::init_module;
 use scroll::{Pwrite, ctx::SizeWith};
 use std::collections::HashMap;
 use std::ffi::CStr;
@@ -482,4 +481,18 @@ fn has_kernelsu_v2() -> bool {
 
 pub fn has_kernelsu() -> bool {
     has_kernelsu_v2() || has_kernelsu_legacy()
+}
+
+fn init_module(image: &[u8], param_values: &std::ffi::CStr) -> std::io::Result<()> {
+    unsafe {
+        match syscalls::syscall!(
+            syscalls::Sysno::init_module,
+            image.as_ptr(),
+            image.len(),
+            param_values.as_ptr()
+        ) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(std::io::Error::from_raw_os_error(e.into_raw())),
+        }
+    }
 }
