@@ -60,6 +60,9 @@ jobs:
         fi
         source .github/scripts/setup-rust-build.sh ${{ inputs.target }} 26
         cargo build --target $TRIPLE --release --manifest-path ./userspace/ksud/Cargo.toml
+        if [ -f target/$TRIPLE/release/ksud ]; then
+          $LLVM_BIN/llvm-strip target/$TRIPLE/release/ksud || echo "strip failed"
+        fi
 
     - name: Upload ksud artifact
       uses: actions/upload-artifact@v7
