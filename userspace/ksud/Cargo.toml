@@ -54,7 +54,7 @@ nom = "8"
 derive-new = "0.7"
 getopts = "0.2"
 ksuinit = { path = "../ksuinit" }
-adb_client = { version = "3.2.3" }
+adb_client = { version = "3.2.3", default-features = false }
 prop-rs-android = { git = "https://github.com/ReSukiSU/ksu_props", rev = "ddb6ee7294467f7f25bad2118e9e24eee104144b" }
 
 [build-dependencies]
