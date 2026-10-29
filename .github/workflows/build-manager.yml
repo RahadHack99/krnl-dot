@@ -43,51 +43,21 @@ jobs:
       keystore_password: ${{ steps.gen.outputs.keystore_password }}
       key_password: ${{ steps.gen.outputs.key_password }}
     steps:
-      - name: Generate temporary keystore
-        if: true
+      - uses: actions/checkout@v7
+      - name: Use permanent release keystore
         id: gen
         run: |
-          KEYSTORE_PASSWORD=$(openssl rand -hex 32)
-          KEY_PASSWORD=$(openssl rand -hex 32)
-          echo "keystore_password=$KEYSTORE_PASSWORD" >> $GITHUB_OUTPUT
-          echo "key_password=$KEY_PASSWORD" >> $GITHUB_OUTPUT
-
-          keytool -genkeypair \
-            -alias pr-key \
-            -keyalg RSA -keysize 2048 \
-            -validity 1 \
-            -storepass "$KEYSTORE_PASSWORD" \
-            -keypass "$KEY_PASSWORD" \
-            -dname "CN=KernelSU PR Build" \
-            -storetype JKS \
-            -keystore pr-key.jks
-
-          echo "keystore=$(base64 -w 0 pr-key.jks)" >> $GITHUB_OUTPUT
+          echo "keystore_password=krnldot123" >> $GITHUB_OUTPUT
+          echo "key_password=krnldot123" >> $GITHUB_OUTPUT
+          echo "keystore=$(base64 -w 0 signing/krnl.jks)" >> $GITHUB_OUTPUT
 
       - name: Extract certificate hash and size
-        if: true
         id: extract
-        env:
-          STORE_PASS: ${{ steps.gen.outputs.keystore_password }}
         run: |
-          # Export DER certificate
-          keytool -exportcert \
-            -alias pr-key \
-            -keystore pr-key.jks \
-            -storepass "$STORE_PASS" \
-            -file pr-cert.der
-
-          # Calculate size in hex
-          SIZE_DEC=$(stat -c%s pr-cert.der)
-          SIZE_HEX=$(printf '0x%04x' "$SIZE_DEC")
-          echo "expected_size=$SIZE_HEX" >> $GITHUB_OUTPUT
-
-          # Calculate SHA256 hash
-          HASH=$(sha256sum pr-cert.der | awk '{print $1}')
-          echo "expected_hash=$HASH" >> $GITHUB_OUTPUT
-
-          echo "Certificate size: $SIZE_HEX ($SIZE_DEC bytes)"
-          echo "Certificate hash: $HASH"
+          echo "expected_size=0x0307" >> $GITHUB_OUTPUT
+          echo "expected_hash=51d3020d49501f4000219756c3ab302be767af66e2468150202c40ad0f5f5e21" >> $GITHUB_OUTPUT
+          echo "Certificate size: 0x0307 (775 bytes)"
+          echo "Certificate hash: 51d3020d49501f4000219756c3ab302be767af66e2468150202c40ad0f5f5e21"
 
   build-lkm:
     needs: generate-key
