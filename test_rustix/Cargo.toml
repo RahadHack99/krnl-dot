@@ -4,4 +4,4 @@ version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
-rustix = { version = "0.38", features = ["fs", "process", "system"] }
+rustix = { version = "1.1", features = ["fs", "process", "system"] }
